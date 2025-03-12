@@ -3,9 +3,9 @@ name = "tos-mcp-server"
 version = "0.1.0"
 description = "TOS MCP server project"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.9"
 dependencies = [
- "aioboto3>=13.2.0",
+ "tos>=2.8.0",
  "mcp>=1.0.0",
  "python-dotenv>=1.0.1",
 ]
