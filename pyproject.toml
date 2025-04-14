@@ -1,20 +1,19 @@
 [project]
-name = "tos-mcp-server"
+name = "mcp-server-tos"
 version = "0.1.0"
-description = "TOS MCP server project"
+description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 dependencies = [
- "tos>=2.8.0",
- "mcp>=1.0.0",
- "python-dotenv>=1.0.1",
+    "httpx>=0.28.1",
+    "mcp[cli]>=1.4.1",
+    "tos>=2.8.1",
+    "python-dotenv>=1.0.1",
+    "uvicorn>=0.34.0",
 ]
-[[project.authors]]
-name = "dinghuazhou"
-
 [build-system]
-requires = [ "hatchling",]
+requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project.scripts]
-tos-mcp-server = "tos_mcp_server:main"
+mcp-server-tos = "mcp_server_tos.main:main"
