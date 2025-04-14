@@ -3,35 +3,33 @@
 An MCP server implementation for retrieving data from TOS.
 
 ## Features
-### Resources
-Expose volcengine TOS Data through **Resources**. (think of these sort of like GET endpoints; they are used to load information into the LLM's context). Currently only **PDF** documents supported and limited to **1000** objects.
-
 
 ### Tools
-- **ListBuckets**
-  - Returns a list of all buckets owned by the authenticated sender of the request
-- **ListObjectsV2**
-  - Returns some or all (up to 1,000) of the objects in a bucket with each request
-- **GetObject**
-  - Retrieves an object from volcengine TOS. In the GetObject request, specify the full key name for the object. General purpose buckets - Both the virtual-hosted-style requests and the path-style requests are supported
 
+- **list_buckets**
+    - Returns a list of all buckets owned by the authenticated sender of the request
+- **list_objects**
+    - Returns some or all (up to 1,000) of the objects in a bucket with each request
+- **get_object**
+    - Retrieves an object from volcengine TOS. In the GetObject request, specify the full key name for the object.
+      General purpose buckets - Both the virtual-hosted-style requests and the path-style requests are supported
 
 ## Configuration
 
-### Setting up volcengine Credentials
-1. Obtain volcengine access key ID, secret access key, and region from the volcengine Management Console and configure credentials files using **Default** profile
-2. Ensure these credentials have appropriate permission READ/WRITE  permissions for TOS.
+The server requires the following environment variables to be set:
 
-### Usage with Claude Desktop
+- `VOLC_ACCESSKEY`: Required, The access key for the VolcEngine.
+- `VOLC_SECRETKEY`: Required, The secret key for the VolcEngine.
+- `REGION`: Required, The region for the TOS service.
+- `TOS_ENDPOINT`: Required, The endpoint for the TOS service.
+- `SECURITY_TOKEN`: Optional, The security token for the credential.
+- `TOS_BUCKETS`: Optional, If you want to use a specific bucket, you need to set this.
 
-#### Claude Desktop
+You can set these environment variables in your shell.
 
-On MacOS: `~/Library/Application\ Support/Claude/claude_desktop_config.json`
-On Windows: `%APPDATA%/Claude/claude_desktop_config.json`
+### MCP Settings Configuration
 
-<details>
-  <summary>Development/Unpublished Servers Configuration</summary>
-
+To add this server to your MCP configuration, add the following to your MCP settings file:
 ```json
 {
   "mcpServers": {
@@ -39,64 +37,48 @@ On Windows: `%APPDATA%/Claude/claude_desktop_config.json`
       "command": "uv",
       "args": [
         "--directory",
-        "/Users/user/generative_ai/model_context_protocol/tos-mcp-server",
+        "/ABSOLUTE/PATH/TO/PARENT/FOLDER/src/mcp_server_tos",
         "run",
-        "tos-mcp-server"
+        "main.py"
       ]
     }
   }
 }
 ```
 
-</details>
-
-<details>
-  <summary>Published Servers Configuration</summary>
+or
 
 ```json
 {
-  "mcpServers": {
-    "TOS-mcp-server": {
-      "command": "uvx",
-      "args": [
-        "tos-mcp-server"
-      ]
+    "mcpServers": {
+        "tls": {
+            "command": "uvx",
+            "args": [
+                "--from",
+                "git+https://github.com/volcengine/ai-app-lab#subdirectory=mcp/server/mcp_server_tos",
+                "mcp-server-tos"
+            ],
+            "env": {
+                "VOLC_ACCESSKEY": "your ak",
+                "VOLC_SECRETKEY": "your sk",
+                "REGION": "tos region",
+                "TOS_ENDPOINT": "tos endpoint",
+                "SECURITY_TOKEN": "your security token",
+                "TOS_BUCKET": "your specific bucket"
+            }
+        }
     }
-  }
 }
   ```
-</details>
 
-## Development
+## Usage
 
-### Building and Publishing
+### Running the Server
 
-To prepare the package for distribution:
-
-1. Sync dependencies and update lockfile:
 ```bash
-uv sync
+# Run the server with stdio transport (default)
+tos-mcp-server
 ```
-
-2. Build package distributions:
-```bash
-uv build
-```
-
-This will create source and wheel distributions in the `dist/` directory.
-
-3. Publish to PyPI:
-```bash
-uv publish
-```
-
-Note: You'll need to set PyPI credentials via environment variables or command flags:
-- Token: `--token` or `UV_PUBLISH_TOKEN`
-- Or username/password: `--username`/`UV_PUBLISH_USERNAME` and `--password`/`UV_PUBLISH_PASSWORD`
-
-## Security
-
-See [CONTRIBUTING](CONTRIBUTING.md#security-issue-notifications) for more information.
 
 ## License
 
